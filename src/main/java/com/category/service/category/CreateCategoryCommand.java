@@ -5,7 +5,7 @@ import lombok.Builder;
 
 public class CreateCategoryCommand {
   private final String name;
-  private final int sort;
+  private final Integer sort;
 
   @Builder
   CreateCategoryCommand(String name,

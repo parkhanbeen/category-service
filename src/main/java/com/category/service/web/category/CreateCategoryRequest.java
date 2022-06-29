@@ -13,7 +13,7 @@ public class CreateCategoryRequest {
   private String name;
 
   @Min(value = 1, message = "최소 1이상 입력되어야 합니다.")
-  private int sort;
+  private Integer sort;
 
   private CreateCategoryRequest() {
   }

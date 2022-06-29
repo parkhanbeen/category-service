@@ -10,7 +10,7 @@ import lombok.Getter;
 public class CreateCategoryResponse {
   private final long id;
   private final String name;
-  private final int sort;
+  private final Integer sort;
   private final LocalDateTime createdDateTime;
 
   @Builder
