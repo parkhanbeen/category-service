@@ -1,8 +1,8 @@
 package com.category.service.common.entity;
 
+import java.time.LocalDateTime;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
-import java.time.LocalDateTime;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
