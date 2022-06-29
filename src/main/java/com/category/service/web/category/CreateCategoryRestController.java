@@ -17,7 +17,7 @@ public class CreateCategoryRestController {
 
   private final CreateCategoryUseCase createCategoryUseCase;
 
-  @PostMapping("/categories")
+  @PostMapping("/api/categories")
   public CreateCategoryResponse create(@RequestBody @Valid CreateCategoryRequest request) {
     return CreateCategoryResponse.of(
         createCategoryUseCase.create(request.toCommand()));

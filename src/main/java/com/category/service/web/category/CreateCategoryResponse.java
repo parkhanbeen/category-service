@@ -14,10 +14,10 @@ public class CreateCategoryResponse {
   private final LocalDateTime createdDateTime;
 
   @Builder
-  private CreateCategoryResponse(long id,
-                                 String name,
-                                 int sort,
-                                 LocalDateTime createdDateTime) {
+  CreateCategoryResponse(long id,
+                         String name,
+                         int sort,
+                         LocalDateTime createdDateTime) {
     this.id = id;
     this.name = name;
     this.sort = sort;
