@@ -21,7 +21,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 class CreateCategoryServiceTest {
 
   @InjectMocks
-  private CreateCategoryService addCategoryService;
+  private CreateCategoryService createCategoryService;
 
   @Mock
   private CategoryRepository categoryRepository;
@@ -49,7 +49,7 @@ class CreateCategoryServiceTest {
 
     @Nested
     @DisplayName("카테고리 정보가 주어질 경우")
-    class ContextWith_addCategoryByAddCommand {
+    class ContextWith_createCategoryByCreateCommand {
       private CreateCategoryCommand subject() {
         return CreateCategoryCommand.builder()
             .name(givenName)
@@ -64,7 +64,7 @@ class CreateCategoryServiceTest {
         var command = subject();
 
         // when
-        var result = addCategoryService.create(command);
+        var result = createCategoryService.create(command);
 
         // then
         assertThat(result.getId()).isEqualTo(givenId);
