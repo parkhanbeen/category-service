@@ -36,7 +36,7 @@ public class Category extends BaseDateTimeEntity {
    * 순서.
    */
   @Column(nullable = false)
-  private int sort;
+  private Integer sort;
 
   /**
    * 부모 카테고리.
@@ -73,6 +73,15 @@ public class Category extends BaseDateTimeEntity {
 
   private void addParent(Category parent) {
     this.parent = parent;
+  }
+
+  /**
+   * 카테고리 정보를 변경한 후 변경된 카테고리를 반환합니다.
+   */
+  public Category update(String name, int sort) {
+    this.name = name;
+    this.sort = sort;
+    return this;
   }
 
 }

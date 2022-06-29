@@ -7,32 +7,29 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class CreateCategoryResponse {
+public class UpdateCategoryResponse {
   private final long id;
   private final String name;
   private final Integer sort;
-  private final LocalDateTime createdDateTime;
+  private final LocalDateTime modifiedDateTime;
 
   @Builder
-  CreateCategoryResponse(long id,
+  UpdateCategoryResponse(long id,
                          String name,
-                         int sort,
-                         LocalDateTime createdDateTime) {
+                         Integer sort,
+                         LocalDateTime modifiedDateTime) {
     this.id = id;
     this.name = name;
     this.sort = sort;
-    this.createdDateTime = createdDateTime;
+    this.modifiedDateTime = modifiedDateTime;
   }
 
-  /**
-   * 카테고리 생성 정보 객체를 반환합니다.
-   */
-  static CreateCategoryResponse of(Category category) {
-    return CreateCategoryResponse.builder()
+  static UpdateCategoryResponse of(Category category) {
+    return UpdateCategoryResponse.builder()
         .id(category.getId())
         .name(category.getName())
         .sort(category.getSort())
-        .createdDateTime(category.getCreatedDateTime())
+        .modifiedDateTime(category.getModifiedDateTime())
         .build();
   }
 }

@@ -2,6 +2,7 @@ package com.category.service.web.category;
 
 import static com.category.service.utils.RestDocFormatGenerator.getDateTimeFormat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -15,13 +16,14 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.category.service.category.CreateCategoryUseCase;
+import com.category.service.category.UpdateCategoryUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,18 +43,18 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-@DisplayName("카테고리 생성")
+@DisplayName("카테고리 수정")
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
-@WebMvcTest(controllers = CreateCategoryRestController.class)
+@WebMvcTest(controllers = UpdateCategoryRestController.class)
 @MockBean(JpaMetamodelMappingContext.class)
-class CreateCategoryRestControllerTest {
+class UpdateCategoryRestControllerTest {
 
   final CategoryMockHelper helper = new CategoryMockHelper();
 
   MockMvc mockMvc;
 
   @MockBean
-  CreateCategoryUseCase createCategoryUseCase;
+  UpdateCategoryUseCase updateCategoryUseCase;
 
   @BeforeEach
   void setUp(WebApplicationContext webApplicationContext,
@@ -64,29 +66,29 @@ class CreateCategoryRestControllerTest {
         .addFilters(new CharacterEncodingFilter("UTF-8", true))
         .build();
 
-    Mockito.mockStatic(CreateCategoryResponse.class);
+    Mockito.mockStatic(UpdateCategoryResponse.class);
   }
 
   @Test
-  @DisplayName("카테고리 생성 API")
-  void create() throws Exception {
+  @DisplayName("카테고리 수정 API")
+  void update() throws Exception {
     var givenId = 1L;
-    var givenCategory = helper.createCategory();
+    var givenCategory = helper.updateCategory();
     ReflectionTestUtils.setField(givenCategory, "id", givenId);
     ReflectionTestUtils.setField(givenCategory, "createdDateTime", LocalDateTime.now());
 
-    given(createCategoryUseCase.create(any()))
+    given(updateCategoryUseCase.update(anyLong(), any()))
         .willReturn(givenCategory);
 
-    var createCategoryResponse = helper.createCategoryResponse(givenCategory);
+    var updateCategoryResponse = helper.updateCategoryResponse(givenCategory);
 
-    given(CreateCategoryResponse.of(any()))
-        .willReturn(createCategoryResponse);
+    given(UpdateCategoryResponse.of(any()))
+        .willReturn(updateCategoryResponse);
 
     // when
     final ResultActions resultActions = mockMvc.perform(
-        post("/api/categories")
-            .content(helper.createCategoryRequest())
+        put("/api/categories/{propertyId}", 1L)
+            .content(helper.updateCategoryRequest())
             .contentType(APPLICATION_JSON)
             .accept(APPLICATION_JSON)
     );
@@ -119,7 +121,7 @@ class CreateCategoryRestControllerTest {
         fieldWithPath("id").type(NUMBER).description("카테고리 고유 번호"),
         fieldWithPath("name").type(STRING).description("카테고리 명"),
         fieldWithPath("sort").type(NUMBER).description("순서"),
-        fieldWithPath("createdDateTime").type(STRING).description("등록 일시").attributes(getDateTimeFormat())
+        fieldWithPath("modifiedDateTime").type(STRING).description("수정 일시").attributes(getDateTimeFormat())
     );
   }
 }

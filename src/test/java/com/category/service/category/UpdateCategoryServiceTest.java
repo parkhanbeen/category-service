@@ -1,8 +1,11 @@
 package com.category.service.category;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+
+import java.util.Optional;
 
 import com.category.service.category.entity.Category;
 import com.category.service.category.entity.CategoryRepository;
@@ -16,12 +19,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-@DisplayName("CreateCategoryService 테스트")
+@DisplayName("UpdateCategoryService 테스트")
 @ExtendWith(MockitoExtension.class)
-class CreateCategoryServiceTest {
+class UpdateCategoryServiceTest {
 
   @InjectMocks
-  private CreateCategoryService createCategoryService;
+  UpdateCategoryService updateCategoryService;
 
   @Mock
   private CategoryRepository categoryRepository;
@@ -37,39 +40,43 @@ class CreateCategoryServiceTest {
         .sort(givenSort)
         .build();
 
-    given(categoryRepository.save(any()))
-        .willReturn(givenCategory);
+    given(categoryRepository.findById(anyLong()))
+        .willReturn(Optional.of(givenCategory));
 
     ReflectionTestUtils.setField(givenCategory, "id", givenId);
   }
 
+
   @Nested
-  @DisplayName("create 메서드는")
-  class DescribeOf_create {
+  @DisplayName("update 메서드는")
+  class DescribeOf_update {
+
+    final String changedName = "변경된 카테고리1";
+    final int changedSort = 2;
 
     @Nested
     @DisplayName("카테고리 정보가 주어질 경우")
-    class ContextWith_createCategoryByCreateCommand {
-      private CreateCategoryCommand subject() {
-        return CreateCategoryCommand.builder()
-            .name(givenName)
-            .sort(givenSort)
+    class ContextWith_updateCategoryByUpdateCommand {
+      private UpdateCategoryCommand subject() {
+        return UpdateCategoryCommand.builder()
+            .name(changedName)
+            .sort(changedSort)
             .build();
       }
 
       @Test
-      @DisplayName("카테고리를 생성한 후 카테고리 정보를 반환한다.")
+      @DisplayName("카테고리를 수정한 후 카테고리 정보를 반환한다.")
       void it_returns() {
         // given
         var command = subject();
 
         // when
-        var result = createCategoryService.create(command);
+        var result = updateCategoryService.update(givenId, command);
 
         // then
         assertThat(result.getId()).isEqualTo(givenId);
-        assertThat(result.getName()).isEqualTo(givenName);
-        assertThat(result.getSort()).isEqualTo(givenSort);
+        assertThat(result.getName()).isEqualTo(changedName);
+        assertThat(result.getSort()).isEqualTo(changedSort);
       }
     }
   }
