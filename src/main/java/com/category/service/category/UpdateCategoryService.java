@@ -13,7 +13,9 @@ public class UpdateCategoryService implements UpdateCategoryUseCase {
   private final CategoryRepository categoryRepository;
 
   @Override
-  public Category update(long categoryId, UpdateCategoryCommand command) {
+  public Category update(long categoryId,
+                         UpdateCategoryCommand command) {
+
     var findCategory = categoryRepository.findById(categoryId)
         .orElseThrow(() -> new CategoryNotFoundException(categoryId));
 
