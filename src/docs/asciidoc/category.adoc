@@ -22,7 +22,7 @@ include::{path}/create/http-request.adoc[]
 include::{path}/create/request-fields.adoc[]
 
 === 응답 페이로드
-include::{path}/create/response-fields.adoc[]
+include::{path}/create/response-fields-data.adoc[]
 
 === 응답 샘플
 include::{path}/create/http-response.adoc[]
@@ -36,7 +36,7 @@ include::{path}/update/http-request.adoc[]
 include::{path}/update/request-fields.adoc[]
 
 === 응답 페이로드
-include::{path}/update/response-fields.adoc[]
+include::{path}/update/response-fields-data.adoc[]
 
 === 응답 샘플
 include::{path}/update/http-response.adoc[]

@@ -110,6 +110,7 @@ class CreateCategoryRestControllerTest {
 
   private List<FieldDescriptor> requestSnippets() {
     return List.of(
+        fieldWithPath("parentId").type(NUMBER).description("부모 카테고리 식별자").optional(),
         fieldWithPath("name").type(STRING).description("카테고리 명"),
         fieldWithPath("sort").type(NUMBER).description("순서")
     );

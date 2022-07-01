@@ -9,6 +9,8 @@ import lombok.Getter;
 @Getter
 public class CreateCategoryRequest {
 
+  private Long parentId;
+
   @NotBlank(message = "카테고리 명은 필수 입력입니다.")
   private String name;
 
@@ -23,6 +25,7 @@ public class CreateCategoryRequest {
    */
   CreateCategoryCommand toCommand() {
     return CreateCategoryCommand.builder()
+        .parentId(parentId)
         .name(name)
         .sort(sort)
         .build();
