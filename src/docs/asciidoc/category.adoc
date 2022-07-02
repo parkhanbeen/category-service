@@ -25,6 +25,18 @@ include::{path}/find-categories/response-fields-data.adoc[]
 include::{path}/find-categories/http-response.adoc[]
 
 
+== 특정 카테고리 조회
+
+==== HTTP Request
+include::{path}/find-categories-by-id/http-request.adoc[]
+
+=== 응답 페이로드
+include::{path}/find-categories-by-id/response-fields-data.adoc[]
+
+=== 응답 샘플
+include::{path}/find-categories-by-id/http-response.adoc[]
+
+
 == 카테고리 생성
 
 ==== HTTP Request
@@ -39,6 +51,7 @@ include::{path}/create/response-fields-data.adoc[]
 === 응답 샘플
 include::{path}/create/http-response.adoc[]
 
+
 == 카테고리 수정
 
 ==== HTTP Request
@@ -52,6 +65,7 @@ include::{path}/update/response-fields-data.adoc[]
 
 === 응답 샘플
 include::{path}/update/http-response.adoc[]
+
 
 == 카테고리 삭제
 
