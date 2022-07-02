@@ -2,6 +2,8 @@ package com.category.service.category.entity;
 
 import java.util.List;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -14,11 +16,7 @@ public class CategoryCustomRepositoryImpl implements CategoryCustomRepository {
 
   @Override
   public List<Category> findCategories() {
-    return queryFactory
-        .selectFrom(category)
-        .distinct()
-        .leftJoin(category.children, childCategory)
-        .fetchJoin()
+    return getCategoryQuery()
         .where(
             category.parent.isNull()
         )
@@ -27,4 +25,33 @@ public class CategoryCustomRepositoryImpl implements CategoryCustomRepository {
         )
         .fetch();
   }
+
+  @Override
+  public List<Category> findCategoriesById(Long id) {
+    return getCategoryQuery()
+        .where(
+            eqCategoryId(id)
+        )
+        .orderBy(
+            category.sort.asc()
+        )
+        .fetch();
+  }
+
+  private JPAQuery<Category> getCategoryQuery() {
+    return queryFactory
+        .selectFrom(category)
+        .distinct()
+        .leftJoin(category.children, childCategory)
+        .fetchJoin();
+  }
+
+  /**
+   * 카테고리 식별자 조회.
+   */
+  private BooleanExpression eqCategoryId(Long id) {
+    return id != null ? category.id.eq(id) : null;
+  }
+
+
 }
