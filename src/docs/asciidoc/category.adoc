@@ -41,3 +41,14 @@ include::{path}/update/response-fields-data.adoc[]
 === 응답 샘플
 include::{path}/update/http-response.adoc[]
 
+== 카테고리 삭제
+
+==== HTTP Request
+include::{path}/delete/http-request.adoc[]
+
+=== 응답 페이로드
+include::{path}/delete/response-fields-data.adoc[]
+
+=== 응답 샘플
+include::{path}/delete/http-response.adoc[]
+

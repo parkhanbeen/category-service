@@ -71,6 +71,16 @@ public class CategoryMockHelper {
           category.getSort(), category.getCreatedDateTime());
     }
   }
+
+  public DeleteCategoryResponse deleteCategoryResponse(long id) {
+    return new TestDeleteCategoryResponse(id);
+  }
+
+  static class TestDeleteCategoryResponse extends DeleteCategoryResponse {
+    TestDeleteCategoryResponse(long id) {
+      super(id);
+    }
+  }
 }
 
 
