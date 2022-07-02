@@ -5,6 +5,7 @@ import com.category.service.category.entity.CategoryRepository;
 import com.category.service.category.exception.CategoryNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -12,6 +13,7 @@ public class UpdateCategoryService implements UpdateCategoryUseCase {
 
   private final CategoryRepository categoryRepository;
 
+  @Transactional
   @Override
   public Category update(long categoryId,
                          UpdateCategoryCommand command) {
