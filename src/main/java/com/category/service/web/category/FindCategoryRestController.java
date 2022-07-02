@@ -5,6 +5,7 @@ import java.util.List;
 import com.category.service.category.FindCategoryUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -19,5 +20,10 @@ public class FindCategoryRestController {
   @GetMapping("/api/categories")
   public List<FindCategoryResponse> findAll() {
     return FindCategoryResponse.of(findCategoryUseCase.findCategories());
+  }
+
+  @GetMapping("/api/categories/{categoryId}")
+  public List<FindCategoryResponse> findById(@PathVariable("categoryId") Long id) {
+    return FindCategoryResponse.of(findCategoryUseCase.findCategoriesById(id));
   }
 }
