@@ -3,10 +3,15 @@ package com.category.service.web.category;
 import static org.springframework.util.ResourceUtils.CLASSPATH_URL_PREFIX;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 import com.category.service.category.entity.Category;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.ResourceUtils;
 
 public class CategoryMockHelper {
@@ -35,8 +40,6 @@ public class CategoryMockHelper {
   public CreateCategoryResponse createCategoryResponse(Category category) {
     return new TestCreateCategoryResponse(category);
   }
-
-
 
   static class TestCreateCategoryResponse extends CreateCategoryResponse {
 
@@ -81,6 +84,22 @@ public class CategoryMockHelper {
       super(id);
     }
   }
+
+  public List<FindCategoryResponse> findCategoryResponseList(List<Category> categories) {
+    AtomicLong givenId = new AtomicLong(1L);
+    categories.forEach(response -> {
+      ReflectionTestUtils.setField(response, "id", givenId.getAndIncrement());
+      ReflectionTestUtils.setField(response, "modifiedDateTime", LocalDateTime.now());
+      ReflectionTestUtils.setField(response, "createdDateTime", LocalDateTime.now());
+    });
+    return categories.stream()
+        .map(TestFindCategoryResponse::new)
+        .collect(Collectors.toList());
+  }
+
+  static class TestFindCategoryResponse extends FindCategoryResponse {
+    TestFindCategoryResponse(Category category) {
+      super(category);
+    }
+  }
 }
-
-
