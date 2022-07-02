@@ -31,7 +31,7 @@ class FindCategoryServiceTest {
 
   @Nested
   @DisplayName("findCategories 메서드는")
-  class DescribeOf_create {
+  class DescribeOf_findCategories {
 
     @Test
     @DisplayName("모든 카테고리 정보를 반환한다.")
@@ -46,6 +46,28 @@ class FindCategoryServiceTest {
       // then
       assertThat(categories).isNotEmpty();
       assertThat(categories.size()).isEqualTo(3);
+      assertThat(categories.get(0).getChildren().size()).isEqualTo(3);
+    }
+  }
+
+  @Nested
+  @DisplayName("findCategoriesById 메서드는")
+  class DescribeOf_findCategoriesById {
+
+    @Test
+    @DisplayName("주어진 카테고리 식별자 맞는 카테고리와 하위 카테고리만을 반환한다.")
+    void it_returns() {
+      // given
+      final var givenId = 1L;
+      given(categoryRepository.findCategoriesById(givenId))
+          .willReturn(helper.createCategoriesById());
+
+      // when
+      List<Category> categories = findCategoryService.findCategoriesById(givenId);
+
+      // then
+      assertThat(categories).isNotEmpty();
+      assertThat(categories.size()).isEqualTo(1);
       assertThat(categories.get(0).getChildren().size()).isEqualTo(3);
     }
   }
