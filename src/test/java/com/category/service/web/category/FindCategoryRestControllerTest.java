@@ -24,10 +24,12 @@ import java.util.List;
 
 import com.category.service.category.FindCategoryUseCase;
 import com.category.service.category.entity.CategoryCustomRepositoryHelper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -53,6 +55,8 @@ class FindCategoryRestControllerTest {
 
   MockMvc mockMvc;
 
+  MockedStatic<FindCategoryResponse> responseMockStatic;
+
   @MockBean
   FindCategoryUseCase findCategoryUseCase;
 
@@ -66,7 +70,12 @@ class FindCategoryRestControllerTest {
         .addFilters(new CharacterEncodingFilter("UTF-8", true))
         .build();
 
-    Mockito.mockStatic(FindCategoryResponse.class);
+    responseMockStatic = Mockito.mockStatic(FindCategoryResponse.class);
+  }
+
+  @AfterEach
+  void after() {
+    responseMockStatic.close();
   }
 
   @Test
@@ -85,6 +94,39 @@ class FindCategoryRestControllerTest {
     // when
     final ResultActions resultActions = mockMvc.perform(
         get("/api/categories")
+            .accept(APPLICATION_JSON)
+    );
+
+    resultActions
+        .andExpect(status().isOk())
+        .andDo(
+            document("categories/{method-name}",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                responseFields(
+                    beneathPath("data").withSubsectionId("data"),
+                    resultsSnippets()
+                )
+            ));
+  }
+
+  @Test
+  @DisplayName("특정 카테고리 조회 API")
+  void findCategoriesById() throws Exception {
+    final var givenCategories = repositoryHelper.createCategoriesById();
+    final var givenId = 1L;
+
+    given(findCategoryUseCase.findCategoriesById(givenId))
+        .willReturn(givenCategories);
+
+    final var givenCategoryResponseList = helper.findCategoryResponseList(givenCategories);
+
+    given(FindCategoryResponse.of(any()))
+        .willReturn(givenCategoryResponseList);
+
+    // when
+    final ResultActions resultActions = mockMvc.perform(
+        get("/api/categories/{categoryId}", givenId)
             .accept(APPLICATION_JSON)
     );
 

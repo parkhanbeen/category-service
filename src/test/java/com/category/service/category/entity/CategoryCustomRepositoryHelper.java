@@ -1,8 +1,16 @@
 package com.category.service.category.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryCustomRepositoryHelper {
+
+  public List<Category> createCategoriesById() {
+    var parentCategories = createParentCategories();
+    var childCategories = createChildCategories();
+    childCategories.forEach(parentCategories.get(0)::addChild);
+    return List.of(parentCategories.get(0));
+  }
 
   public List<Category> createCategories() {
     var parentCategories = createParentCategories();
@@ -10,6 +18,7 @@ public class CategoryCustomRepositoryHelper {
     childCategories.forEach(parentCategories.get(0)::addChild);
     return parentCategories;
   }
+
   private List<Category> createParentCategories() {
     return List.of(
         Category.builder()
