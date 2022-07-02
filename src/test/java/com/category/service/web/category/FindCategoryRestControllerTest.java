@@ -1,6 +1,8 @@
 package com.category.service.web.category;
 
-import static org.mockito.ArgumentMatchers.anyLong;
+import static com.category.service.utils.RestDocFormatGenerator.getDateTimeFormat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -8,16 +10,20 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
+import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
 
-import com.category.service.category.DeleteCategoryUseCase;
+import com.category.service.category.FindCategoryUseCase;
+import com.category.service.category.entity.CategoryCustomRepositoryHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,23 +38,23 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-@DisplayName("카테고리 삭제")
+@DisplayName("카테고리 조회")
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
-@WebMvcTest(controllers = DeleteCategoryRestController.class)
+@WebMvcTest(controllers = FindCategoryRestController.class)
 @MockBean(JpaMetamodelMappingContext.class)
-class DeleteCategoryRestControllerTest {
+class FindCategoryRestControllerTest {
 
   final CategoryMockHelper helper = new CategoryMockHelper();
+  final CategoryCustomRepositoryHelper repositoryHelper = new CategoryCustomRepositoryHelper();
 
   MockMvc mockMvc;
 
   @MockBean
-  DeleteCategoryUseCase deleteCategoryUseCase;
+  FindCategoryUseCase findCategoryUseCase;
 
   @BeforeEach
   void setUp(WebApplicationContext webApplicationContext,
@@ -60,24 +66,25 @@ class DeleteCategoryRestControllerTest {
         .addFilters(new CharacterEncodingFilter("UTF-8", true))
         .build();
 
-    Mockito.mockStatic(DeleteCategoryResponse.class);
+    Mockito.mockStatic(FindCategoryResponse.class);
   }
 
   @Test
-  @DisplayName("카테고리 삭제 API")
-  void delete() throws Exception {
-    var givenId = 1L;
+  @DisplayName("카테고리 전체 조회 API")
+  void findCategories() throws Exception {
+    var givenCategories = repositoryHelper.createCategories();
 
-    given(deleteCategoryUseCase.delete(anyLong()))
-        .willReturn(givenId);
+    given(findCategoryUseCase.findCategories())
+        .willReturn(givenCategories);
 
-    given(DeleteCategoryResponse.of(anyLong()))
-        .willReturn(helper.deleteCategoryResponse(givenId));
+    final var givenCategoryResponseList = helper.findCategoryResponseList(givenCategories);
+
+    given(FindCategoryResponse.of(any()))
+        .willReturn(givenCategoryResponseList);
 
     // when
     final ResultActions resultActions = mockMvc.perform(
-        MockMvcRequestBuilders
-            .delete("/api/categories/{categoryId}", givenId)
+        get("/api/categories")
             .accept(APPLICATION_JSON)
     );
 
@@ -96,7 +103,21 @@ class DeleteCategoryRestControllerTest {
 
   private List<FieldDescriptor> resultsSnippets() {
     return List.of(
-        fieldWithPath("id").type(NUMBER).description("카테고리 고유 번호")
+        fieldWithPath("id").type(NUMBER).description("카테고리 고유 번호"),
+        fieldWithPath("name").type(STRING).description("카테고리 명"),
+        fieldWithPath("sort").type(NUMBER).description("순서"),
+        fieldWithPath("modifiedDateTime").type(STRING)
+            .description("수정 일시").attributes(getDateTimeFormat()),
+        fieldWithPath("createdDateTime").type(STRING)
+            .description("등록 일시").attributes(getDateTimeFormat()),
+        fieldWithPath("children[]").type(ARRAY).description("자식 카테고리").optional(),
+        fieldWithPath("children[].id").type(NUMBER).description("카테고리 고유 번호"),
+        fieldWithPath("children[].name").type(STRING).description("카테고리 명"),
+        fieldWithPath("children[].sort").type(NUMBER).description("순서"),
+        fieldWithPath("children[].modifiedDateTime").type(STRING)
+            .description("수정 일시").attributes(getDateTimeFormat()),
+        fieldWithPath("children[].createdDateTime").type(STRING)
+            .description("등록 일시").attributes(getDateTimeFormat())
     );
   }
 

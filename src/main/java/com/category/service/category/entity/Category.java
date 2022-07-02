@@ -12,11 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import com.category.service.common.entity.BaseDateTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.BatchSize;
 
 @Getter
 @Table
@@ -49,7 +51,9 @@ public class Category extends BaseDateTimeEntity {
   /**
    * 자식 카테고리.
    */
-  @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
+  @OrderBy(value = "sort ASC")
+  @BatchSize(size = 10)
+  @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Category> children = new ArrayList<>();
 
   protected Category() {
