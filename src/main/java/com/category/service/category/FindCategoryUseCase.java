@@ -13,4 +13,9 @@ public interface FindCategoryUseCase {
    * 전체 카테고리 정보를 반환합니다.
    */
   List<Category> findCategories();
+
+  /**
+   * 카테고리 식별자를 이용해 카테고리 정보들을 반환합니다.
+   */
+  List<Category> findCategoriesById(Long id);
 }

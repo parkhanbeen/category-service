@@ -19,4 +19,10 @@ public class FindCategoryService implements FindCategoryUseCase {
   public List<Category> findCategories() {
     return categoryRepository.findCategories();
   }
+
+  @Transactional(readOnly = true)
+  @Override
+  public List<Category> findCategoriesById(Long id) {
+    return categoryRepository.findCategoriesById(id);
+  }
 }
